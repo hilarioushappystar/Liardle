@@ -14,16 +14,18 @@ class Gamestate():
     def init(self):
         self.guesses = []
         self.results = []
+        self.liarindeces = []
         
         wordlistfilename = 'commonwords.txt'
-        wordlist = []
+        wordlistfilename = 'dictionary.txt'
+        self.wordlist = []
         with open(wordlistfilename) as f:
             for line in f:
                 word = line.strip()
-                wordlist.append(word)
-        randint = np.random.randint(len(wordlist))
+                self.wordlist.append(word)
+        randint = np.random.randint(len(self.wordlist))
         
-        self.targetword = wordlist[randint].upper()
+        self.targetword = self.wordlist[randint].upper()
         #print('targetword is ', self.targetword)   # <<<---- debugging purposes only!!!!!
     def add_guess(self,string):
         string = string.upper()
@@ -31,6 +33,8 @@ class Gamestate():
             print('ERROR: string contains non-alphabetic characters')
         elif( len(string) != 5):
             print('ERROR: string is not a five letter word')
+        elif( string not in self.wordlist):
+            print('ERROR: string is not in dictionary')
         else:
             self.guesses.append(string)
             self.results.append(self.compute_colours(string))
@@ -61,5 +65,6 @@ class Gamestate():
         while( impostor == result[foo]):
             impostor = random.choice(['b','g','y'])
         result[foo] = impostor 
-        
+        self.liarindeces.append(foo)
+        #print('liarindeces = ', self.liarindeces)
         return result   # return a list of characters! 

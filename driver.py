@@ -53,6 +53,15 @@ class UI:
       
         self.gs.add_guess(mystr)
         
+        if( len(self.gs.guesses) == 0):
+            return  # avoid a bug if first guess is illegal!
+        # now work out if the game is over (won or lost, doesn't matter)
+        theguess = self.gs.guesses[len(self.gs.guesses)-1]
+        if( theguess == self.gs.targetword):
+            self.gameover=True
+        if( len(self.gs.guesses) >= 10):
+            self.gameover=True
+        
         # now print the game state to the canvas 
         self.images = []
         for foo in range (len(self.gs.guesses)):
@@ -62,11 +71,18 @@ class UI:
             colours = self.gs.results[foo] 
             for bar in range(5):
                 file = 'IMAGES\\black_blob.png'
+                if( self.gameover and self.gs.liarindeces[foo] == bar):
+                    file = 'IMAGES\\black_blob_cross.png'
                 if(colours[bar] == 'g'):
                     file = 'IMAGES\\green_blob.png'
+                    if( self.gameover and self.gs.liarindeces[foo] == bar):
+                        file = 'IMAGES\\green_blob_cross.png'
+                
                 if(colours[bar] == 'y'):
                     file = 'IMAGES\\yellow_blob.png'
-        
+                    if( self.gameover and self.gs.liarindeces[foo] == bar):
+                        file = 'IMAGES\\yellow_blob_cross.png'
+                
                 self.images.append( PhotoImage(file=file))
                 self.canvas.create_image(200 + 40*bar,100 + 50 * foo, anchor=tk.CENTER, image=self.images[-1],tag='some_tag')
 
